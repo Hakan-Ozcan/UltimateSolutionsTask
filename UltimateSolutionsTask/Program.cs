@@ -1,5 +1,11 @@
+using BusinessLayer_.Abstract;
+using BusinessLayer_.Concrete;
 using DataAccessLayer;
+using DataAccessLayer.Abstract;
+using DataAccessLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +26,14 @@ builder.Services.AddCors(options =>
                .AllowAnyMethod();
     });
 });
-
+builder.Host.UseSerilog((builderContext, loggerConfiguration) => loggerConfiguration
+    .ReadFrom.Configuration(builderContext.Configuration)
+    .WriteTo.Logger(Log.Logger)
+);
+// ---------------Service-------------------- /
+builder.Services.AddScoped(typeof(IEmployeeService), typeof(EmployeeManager));
+// ----------------DAL------------------ /
+builder.Services.AddScoped<IEmployee, GenericRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -29,7 +42,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors();  
 app.UseAuthorization();
 
 app.MapControllers();

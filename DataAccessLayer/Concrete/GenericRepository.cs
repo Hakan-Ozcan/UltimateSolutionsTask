@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Concrete
 {
-    public class OrderDataRepository : IEmployee
+    public class GenericRepository : IEmployee
     {
         private readonly Context _context;
-        public OrderDataRepository(Context context)
+        public GenericRepository(Context context)
         {
             _context = context;
         }
